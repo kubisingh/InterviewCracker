@@ -11,3 +11,9 @@
 /build
 /captures
 .externalNativeBuild
+
+
+#modules
+javafeatures/
+androidfeatures/
+kotlinfeatures/

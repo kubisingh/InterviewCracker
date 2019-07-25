@@ -1,1 +1,1 @@
-include ':app', ':androidfeatures', ':javafeatures', ':kotlinfeatures'
+include ':app'

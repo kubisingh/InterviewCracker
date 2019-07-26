@@ -27,17 +27,24 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-task gitCloneRepo() {
-    Grgit.clone(dir: file("$rootDir/javafeatures"), uri: 'https://github.com/kubisingh/javafeatures.git')
-    Grgit.clone(dir: file("$rootDir/androidfeatures"), uri: 'https://github.com/kubisingh/androidfeatures.git')
-    Grgit.clone(dir: file("$rootDir/kotlinfeatures"), uri: 'https://github.com/kubisingh/kotlinfeatures.git')
-}
-
-
+def javafolder = file("$rootDir/modules/javafeatures")
+def androidfolder = file("$rootDir/modules/androidfeatures")
+def kotlinfolder = file("$rootDir/modules/kotlinfeatures")
 def settingfile = file("$rootDir/settings.gradle")
-task importModule() {
-    settingfile.writable = true
-    settingfile.write("include ':app', ':androidfeatures', ':javafeatures', ':kotlinfeatures'")
+task gitCloneRepo() {
+    if (!javafolder.exists()) {
+        Grgit.clone(dir: javafolder, uri: 'https://github.com/kubisingh/javafeatures.git')
+    }
+    if(!androidfolder.exists()) {
+        Grgit.clone(dir: androidfolder, uri: 'https://github.com/kubisingh/androidfeatures.git')
+    }
+    if(!kotlinfolder.exists()) {
+        Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git')
+        settingfile.writable = true
+        settingfile.write("include ':app'," +
+                " ':modules:androidfeatures'," +
+                " ':modules:javafeatures'," +
+                " ':modules:kotlinfeatures'")
+    }
 }
 

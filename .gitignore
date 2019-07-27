@@ -14,8 +14,7 @@
 
 
 #modules
-/modules
-modules
 /modules/javafeatures/
 /modules/androidfeatures/
 /modules/kotlinfeatures/
+/modules/corefeatures/

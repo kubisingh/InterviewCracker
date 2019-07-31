@@ -1,5 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 import org.ajoberstar.grgit.*
+import groovy.swing.SwingBuilder
 buildscript {
     ext.kotlin_version = '1.3.31'
     repositories {
@@ -58,38 +59,50 @@ task gitCloneRepo() {
     if(kotlinfolder.exists() && !kotlinfolderSrc.exists()){
         kotlinfolder.delete()
     }
-
-    def console = System.console()
-    if (console) {
-        if (!corefolder.exists()) {
+    if (!corefolder.exists()) {
+        def console = System.console()
+        if (console) {
             printf("------Please Enter Git Credentials-----")
             println("")
             username = console.readLine("> Enter your username : ")
             pass = console.readPassword("> Enter your Password (Not Visible): ")
             auth = new Credentials(username: username, password: pass)
+        } else {
+            new SwingBuilder().edt {
+                dialog(modal: true, title: "Enter Git Credentials", alwaysOnTop: true, resizable: false,
+                        locationRelativeTo: null, pack: true, show: true) {
+                    vbox {
+                        label(text: "Enter Git Username:")
+                        textField id: "usertxt", input = textField()
+                        label(text: "Enter Git Password:")
+                        textField id: "passtxt", input = passwordField()
+                        button(defaultButton: true, text: "OK", actionPerformed: {
+                            auth = new Credentials(username: usertxt.text, password: passtxt.text)
+                            dispose()
+                        })
+                    }
+                }
+            }
+        }
+    }
+    if (auth != null) {
+        if (!corefolder.exists()) {
             Grgit.clone(dir: corefolder, uri: 'https://github.com/kubisingh/corefeatures.git', credentials: auth)
         }
         if (!javafolder.exists()) {
             Grgit.clone(dir: javafolder, uri: 'https://github.com/kubisingh/javafeatures.git', credentials: auth)
         }
-        if(!androidfolder.exists()) {
+        if (!androidfolder.exists()) {
             Grgit.clone(dir: androidfolder, uri: 'https://github.com/kubisingh/androidfeatures.git', credentials: auth)
         }
-        if(!kotlinfolder.exists()) {
+        if (!kotlinfolder.exists()) {
             Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git', credentials: auth)
         }
     } else {
         if (!corefolder.exists()) {
-            Grgit.clone(dir: corefolder, uri: 'https://github.com/kubisingh/corefeatures.git')
-        }
-        if (!javafolder.exists()) {
-            Grgit.clone(dir: javafolder, uri: 'https://github.com/kubisingh/javafeatures.git')
-        }
-        if(!androidfolder.exists()) {
-            Grgit.clone(dir: androidfolder, uri: 'https://github.com/kubisingh/androidfeatures.git')
-        }
-        if(!kotlinfolder.exists()) {
-            Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git')
+            println("-----------Invalid Git Credentials----------")
+            println("-------ReEnter command--------")
+            println("")
         }
     }
 

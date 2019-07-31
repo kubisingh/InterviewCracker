@@ -34,5 +34,4 @@ dependencies {
     implementation project(':modules:javafeatures')
     implementation project(':modules:kotlinfeatures')
     implementation project(':modules:androidfeatures')
-    implementation project(':modules:corefeatures')
 }

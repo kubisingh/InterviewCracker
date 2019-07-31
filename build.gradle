@@ -37,8 +37,6 @@ def javafolderSrc = file("$rootDir/modules/javafeatures/src")
 def androidfolderSrc = file("$rootDir/modules/androidfeatures/src")
 def kotlinfolderSrc = file("$rootDir/modules/kotlinfeatures/src")
 def corefolderSrc = file("$rootDir/modules/corefeatures/src")
-
-def settingfile = file("$rootDir/settings.gradle")
 task gitCloneRepo() {
     if(corefolder.exists() && !corefolderSrc.exists()){
         corefolder.delete()
@@ -66,12 +64,6 @@ task gitCloneRepo() {
     }
     if(!kotlinfolder.exists()) {
         Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git')
-        settingfile.writable = true
-        settingfile.write("include ':app'," +
-                " ':modules:corefeatures'," +
-                " ':modules:androidfeatures'," +
-                " ':modules:javafeatures'," +
-                " ':modules:kotlinfeatures'")
     }
 }
 

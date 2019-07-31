@@ -27,6 +27,10 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+def username
+def pass
+
 def javafolder = file("$rootDir/modules/javafeatures")
 def androidfolder = file("$rootDir/modules/androidfeatures")
 def kotlinfolder = file("$rootDir/modules/kotlinfeatures")
@@ -37,33 +41,57 @@ def javafolderSrc = file("$rootDir/modules/javafeatures/src")
 def androidfolderSrc = file("$rootDir/modules/androidfeatures/src")
 def kotlinfolderSrc = file("$rootDir/modules/kotlinfeatures/src")
 def corefolderSrc = file("$rootDir/modules/corefeatures/src")
+
+def auth
+
 task gitCloneRepo() {
+
     if(corefolder.exists() && !corefolderSrc.exists()){
         corefolder.delete()
     }
-    if (!corefolder.exists()) {
-        Grgit.clone(dir: corefolder, uri: 'https://github.com/kubisingh/corefeatures.git')
-    }
-
     if(javafolder.exists() && !javafolderSrc.exists()){
         javafolder.delete()
     }
-    if (!javafolder.exists()) {
-        Grgit.clone(dir: javafolder, uri: 'https://github.com/kubisingh/javafeatures.git')
-    }
-
     if(androidfolder.exists() && !androidfolderSrc.exists()){
         androidfolder.delete()
     }
-    if(!androidfolder.exists()) {
-        Grgit.clone(dir: androidfolder, uri: 'https://github.com/kubisingh/androidfeatures.git')
-    }
-
     if(kotlinfolder.exists() && !kotlinfolderSrc.exists()){
         kotlinfolder.delete()
     }
-    if(!kotlinfolder.exists()) {
-        Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git')
+
+    def console = System.console()
+    if (console) {
+        if (!corefolder.exists()) {
+            printf("------Please Enter Git Credentials-----")
+            println("")
+            username = console.readLine("> Enter your username : ")
+            pass = console.readPassword("> Enter your Password (Not Visible): ")
+            auth = new Credentials(username: username, password: pass)
+            Grgit.clone(dir: corefolder, uri: 'https://github.com/kubisingh/corefeatures.git', credentials: auth)
+        }
+        if (!javafolder.exists()) {
+            Grgit.clone(dir: javafolder, uri: 'https://github.com/kubisingh/javafeatures.git', credentials: auth)
+        }
+        if(!androidfolder.exists()) {
+            Grgit.clone(dir: androidfolder, uri: 'https://github.com/kubisingh/androidfeatures.git', credentials: auth)
+        }
+        if(!kotlinfolder.exists()) {
+            Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git', credentials: auth)
+        }
+    } else {
+        if (!corefolder.exists()) {
+            Grgit.clone(dir: corefolder, uri: 'https://github.com/kubisingh/corefeatures.git')
+        }
+        if (!javafolder.exists()) {
+            Grgit.clone(dir: javafolder, uri: 'https://github.com/kubisingh/javafeatures.git')
+        }
+        if(!androidfolder.exists()) {
+            Grgit.clone(dir: androidfolder, uri: 'https://github.com/kubisingh/androidfeatures.git')
+        }
+        if(!kotlinfolder.exists()) {
+            Grgit.clone(dir: kotlinfolder, uri: 'https://github.com/kubisingh/kotlinfeatures.git')
+        }
     }
+
 }
 
